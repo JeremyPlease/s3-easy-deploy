@@ -1,0 +1,16 @@
+{
+  "env": {
+    "node": true,
+    "es6": true,
+  },
+  "extends": [
+    "defaults"
+  ],
+  "rules": {
+    "no-console": "off",
+    "comma-dangle": "off",
+  },
+  "globals": {
+    "console": false
+  }
+}
