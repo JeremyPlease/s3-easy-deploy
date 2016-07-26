@@ -49,6 +49,7 @@ specified in ~/.aws/credentials. This can be specified instead of `accessKeyId` 
 * `region`: The S3 region to deploy to. Defaults to "us-east-1"
 * `publicRoot`: The path to the directory you want to deploy to s3
 * `bucket`: The s3 bucket name to deploy to
+* `cloudFrontDistributionId`: (optional) The CloudFront distribution id to invalidate.
 * `concurrentRequests`: The number of uploads to process concurrently. Defaults to 10.
 
 

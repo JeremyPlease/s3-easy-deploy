@@ -9,7 +9,7 @@ const Mime = require('mime');
 const Path = require('path');
 require('colors');
 
-let config, s3;
+let config, s3, cloudfront;
 
 let status = {
   total: 0,
@@ -17,8 +17,8 @@ let status = {
   skipped: 0
 };
 
-module.exports.deploy = (config, callback) => {
-  return setup(config).then(startDeploy).then(() => {
+module.exports.deploy = (options, callback) => {
+  return setup(options).then(startDeploy).then(() => {
     console.log('S3 deploy completed');
     if (callback) {
       return callback(null, 'success!');
@@ -60,12 +60,13 @@ function setup(options) {
   config.concurrentRequests = config.concurrentRequests || 10;
 
   s3 = new AWS.S3();
+  cloudfront = new AWS.CloudFront();
 
   return Promise.resolve();
 }
 
 function startDeploy() {
-  return getFiles().then(uploadFiles)
+  return getFiles().then(uploadFiles).then(createInvalidation);
 }
 
 function getFiles() {
@@ -167,4 +168,29 @@ function printProgress(action, file) {
     status.total + ' total --- ' +
     (((status.uploaded + status.skipped) / status.total) * 100).toFixed(2) +'% complete' +
     ' --- ' + action + ' ' + file);
+}
+
+function createInvalidation() {
+  return new Promise((resolve, reject) => {
+    if (!config.cloudFrontDistributionId) {
+      return resolve();
+    }
+    console.log('\nCreating CloudFront invalidation...');
+    var params = {
+      DistributionId: config.cloudFrontDistributionId,
+      InvalidationBatch: {
+        CallerReference: (new Date()).toISOString(),
+        Paths: {
+          Quantity: 1,
+          Items: ['/*']
+        }
+      }
+    };
+    cloudfront.createInvalidation(params, function(err) {
+      if (err) {
+        return reject(err);
+      }
+      resolve();
+    });
+  });
 }
