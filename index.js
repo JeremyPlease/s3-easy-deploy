@@ -172,12 +172,12 @@ function printProgress(action, file) {
 
 function createInvalidation() {
   return new Promise((resolve, reject) => {
-    if (!config.cloudFrontDistributionId) {
+    if (!config.cloudFrontId) {
       return resolve();
     }
     console.log('\nCreating CloudFront invalidation...');
     var params = {
-      DistributionId: config.cloudFrontDistributionId,
+      DistributionId: config.cloudFrontId,
       InvalidationBatch: {
         CallerReference: (new Date()).toISOString(),
         Paths: {
