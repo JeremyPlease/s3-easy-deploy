@@ -15,6 +15,7 @@ program
   .option('--region <region>', 'The S3 region. Defaults to us-east-1')
   .option('--public-root <publicRoot>', 'The path of the folder to deploy')
   .option('--bucket <bucket>', 'The S3 bucket name')
+  .option('--acl <acl>', 'The Access Control List policy')
   .option('--cloud-front-id <cloudFrontDistributionId>', 'The CloudFront distribution id')
   .option('--concurrent-requests <concurrentRequests>', 'The number of uploads to send at the same time. Defaults to 10')
   .parse(process.argv);
@@ -42,6 +43,7 @@ var optionsToCheck = [
   'region',
   'publicRoot',
   'bucket',
+  'acl',
   'cloudFrontId',
   'concurrentRequests',
 ];
