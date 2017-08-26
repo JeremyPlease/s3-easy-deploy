@@ -1,5 +1,6 @@
 "use strict";
 
+const readline = require('readline');
 const Async = require('async');
 const AWS = require('aws-sdk');
 const Crypto = require('crypto');
@@ -166,7 +167,8 @@ function uploadFiles(files) {
 }
 
 function printProgress(action, file) {
-  process.stdout.clearLine();
+  readline.clearLine(process.stdout, 0);
+  readline.cursorTo(process.stdout, 0);
   process.stdout.write('\r' +
     status.uploaded + ' uploaded / ' +
     status.skipped + ' skipped / ' +

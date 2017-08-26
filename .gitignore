@@ -10,3 +10,7 @@ node_modules
 .npm
 
 .DS_Store
+
+# Intellij IDEA
+*.iml
+.idea
