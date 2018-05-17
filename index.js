@@ -37,13 +37,6 @@ module.exports.deploy = (options, callback) => {
 
 function setup(options) {
   config = options;
-  if (config.accessKeyId && config.secretAccessKey) {
-    AWS.config.credentials = new AWS.Credentials(config.accessKeyId, config.secretAccessKey);
-  } else if (config.profile) {
-    AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile: config.profile });
-  } else {
-    return Promise.reject('Must specify profile or accessKeyId and secretAccessKey');
-  }
 
   if (config.region) {
     AWS.config.region = config.region;

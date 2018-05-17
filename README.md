@@ -12,7 +12,28 @@ Simply uploads the entire contents of a dirctory to an S3 bucket.
 MD5 hash is used to determine if a file has changed so that only changed files are uploaded.
 Also sets ACL to public read on all uploaded files.
 
+## AWS Credentials
+
+As per AWS docs, you can set your AWS credentials with environment variables 
+[`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html)
+or [`AWS_PROFILE`](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html).
+
+
 ## Usage
+
+### In your `package.json`
+
+Simply add the following to your `package.json` file and run `npm run deploy` to deploy.
+
+```
+{
+  ...
+  "scfripts": {
+    ...
+    "deploy": "s3-easy-deploy --public-root ./dist --bucket magic-bucket-name"
+  }
+}
+```
 
 ### Within node script
 
@@ -21,7 +42,6 @@ var s3EasyDeploy = require('s3-easy-deploy');
 
 // with callback
 s3EasyDeploy.deploy({
-  profile: 'aws-profile',
   publicRoot: './release',
   bucket: 'magic-bucket-name',
   acl: 'private'
@@ -31,7 +51,6 @@ s3EasyDeploy.deploy({
 
 // with promise
 s3EasyDeploy.deploy({
-  profile: 'aws-profile',
   publicRoot: './release',
   bucket: 'magic-bucket-name',
   acl: 'private'
@@ -44,10 +63,6 @@ s3EasyDeploy.deploy({
 
 #### `.deploy(...)` options
 
-* `accessKeyId`: AWS access key id. Must be specified with `secretAccessKey`.
-* `secretAccessKey`: AWS secret access key. Must be specified with `accessKeyId`.
-* `profile`: The [AWS profile name](http://docs.aws.amazon.com/java-sdk/latest/developer-guide/setup-credentials.html)
-specified in ~/.aws/credentials. This can be specified instead of `accessKeyId` and `secretAccessKey`
 * `region`: The S3 region to deploy to. Defaults to "us-east-1"
 * `publicRoot`: The path to the directory you want to deploy to s3
 * `bucket`: The s3 bucket name to deploy to
@@ -67,10 +82,7 @@ specified in ~/.aws/credentials. This can be specified instead of `accessKeyId` 
 
     -h, --help                                  output usage information
     -V, --version                               output the version number
-    -c, --config <configFile>                   The AWS accessKeyId
-    --access-key-id <accessKeyId>               The AWS accessKeyId
-    --secret-access-key <secretAccessKey>       The AWS secretAccessKey
-    --profile <profile>                         The AWS profile saved in ~/.aws/credentials
+    -c, --config <configFile>                   A config file
     --region <region>                           The S3 region. Defaults to us-east-1
     --public-root <publicRoot>                  The path of the folder to deploy
     --bucket <bucket>                           The S3 bucket name
@@ -80,6 +92,6 @@ specified in ~/.aws/credentials. This can be specified instead of `accessKeyId` 
 ```
 
 Example usage:
-`s3-easy-deploy --access-key-id kjch84hg9shd --secret-access-key v3049g0jdge --public-root ./public --bucket magic-bucket-name --acl public-read`
+`s3-easy-deploy --public-root ./public --bucket magic-bucket-name --acl public-read`
 or specify a config file
 `s3-easy-deploy deploy-config.json`
