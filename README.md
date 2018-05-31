@@ -14,7 +14,7 @@ Also sets ACL to public read on all uploaded files.
 
 ## AWS Credentials
 
-As per AWS docs, you can set your AWS credentials with environment variables 
+As per AWS docs, you can set your AWS credentials with environment variables
 [`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html)
 or [`AWS_PROFILE`](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html).
 
@@ -59,6 +59,29 @@ s3EasyDeploy.deploy({
 }, function(error) {
   // error!
 });
+
+// with additional headers and metadata
+s3EasyDeploy.deploy({
+  publicRoot: './release',
+  bucket: 'magic-bucket-name',
+  acl: 'private',
+  headers: [
+      {
+          match: /^[^\/]+\.(js|css|html)$/,
+          tags: { ContentEncoding: 'gzip' }
+      }
+  ],
+  metadata: [
+      {
+          match: /^[^\/]+\.(js|css|html)$/,
+          tags: { 'Build-Version': '1.0.1', 'Build-Timestamp': 442527840000 }
+      }
+  ]
+}).then(function(result) {
+  // done!
+}, function(error) {
+  // error!
+});
 ```
 
 #### `.deploy(...)` options
@@ -69,6 +92,8 @@ s3EasyDeploy.deploy({
 * `acl`: (optional) [Canned s3 policy](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) to use (e.g. 'private', 'public-read'). Defaults to "public-read".
 * `cloudFrontId`: (optional) The CloudFront distribution id to invalidate.
 * `concurrentRequests`: The number of uploads to process concurrently. Defaults to 10.
+* `headers`: Additional headers to set ([{ match: RegExp, tags: { key: value } }])
+* `metadata`: Additional metadata to set ([{ match: RegExp, tags: { key: value } }])
 
 
 ### With command `s3-easy-deploy`
