@@ -79,19 +79,27 @@ function getFiles() {
       files = files.filter(f => !Fs.lstatSync(Path.join(config.publicRoot, f)).isDirectory());
       resolve(files.map(f => {
         const extraHeaders = {};
-        if ( addHeaders ) {
+        if (addHeaders) {
           config.headers.forEach(h => {
-              try {
-                   if ( h.match.test(f) ) Object.assign(extraHeaders, h.tags);
-              } catch (e) { }
+            try {
+              if (h.match.test(f)) {
+                Object.assign(extraHeaders, h.tags);
+              }
+            } catch (e) {
+              console.error('Error with headers', e);
+            }
           });
         }
-        const extraMetadata = {}
-        if ( addMetadata ) {
+        const extraMetadata = {};
+        if (addMetadata) {
           config.metadata.forEach(m => {
-              try {
-                   if ( m.match.test(f) ) Object.assign(extraMetadata, m.tags);
-              } catch (e) { }
+            try {
+              if (m.match.test(f)) {
+                Object.assign(extraMetadata, m.tags);
+              }
+            } catch (e) {
+              console.error('Error with metadata', e);
+            }
           });
         }
         const body = Fs.readFileSync(Path.join(config.publicRoot, f));
