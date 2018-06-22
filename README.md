@@ -65,7 +65,7 @@ s3EasyDeploy.deploy({
   publicRoot: './release',
   bucket: 'magic-bucket-name',
   acl: 'private',
-  headers: [
+  putObjectParams: [
       {
           match: /^[^\/]+\.(js|css|html)$/,
           tags: { ContentEncoding: 'gzip' }
@@ -92,8 +92,8 @@ s3EasyDeploy.deploy({
 * `acl`: (optional) [Canned s3 policy](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) to use (e.g. 'private', 'public-read'). Defaults to "public-read".
 * `cloudFrontId`: (optional) The CloudFront distribution id to invalidate.
 * `concurrentRequests`: The number of uploads to process concurrently. Defaults to 10.
-* `headers`: Additional headers to set ([{ match: RegExp, tags: { key: value } }])
-* `metadata`: Additional metadata to set ([{ match: RegExp, tags: { key: value } }])
+* `putObjectParams`: (optional) Additional params to pass to [S3 putObject](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property) call (e.g. headers to set on uploaded files) ([{ match: RegExp, tags: { key: value } }])
+* `metadata`: (optional) Additional metadata to set ([{ match: RegExp, tags: { key: value } }])
 
 
 ### With command `s3-easy-deploy`

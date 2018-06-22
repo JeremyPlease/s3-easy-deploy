@@ -74,19 +74,19 @@ function getFiles() {
       if (err) {
         return reject(err);
       }
-      const addHeaders = config.headers && Array.isArray(config.headers) && config.headers.length > 0;
-      const addMetadata = config.metadata && Array.isArray(config.metadata) && config.metadata.length > 0;
+      const addHeaders = Array.isArray(config.putObjectParams) && config.putObjectParams.length > 0;
+      const addMetadata = Array.isArray(config.metadata) && config.metadata.length > 0;
       files = files.filter(f => !Fs.lstatSync(Path.join(config.publicRoot, f)).isDirectory());
       resolve(files.map(f => {
         const extraHeaders = {};
         if (addHeaders) {
-          config.headers.forEach(h => {
+          config.putObjectParams.forEach(h => {
             try {
               if (h.match.test(f)) {
                 Object.assign(extraHeaders, h.tags);
               }
             } catch (e) {
-              console.error('Error with headers', e);
+              console.error('Error with additional putObject parameters', e);
             }
           });
         }
