@@ -8,7 +8,7 @@ require('colors');
 
 program
   .version(version)
-  .option('-c, --config <configFile>', 'The AWS accessKeyId')
+  .option('-c, --config <configFile>', 'A config file')
   .option('--region <region>', 'The S3 region. Defaults to us-east-1')
   .option('--public-root <publicRoot>', 'The path of the folder to deploy')
   .option('--bucket <bucket>', 'The S3 bucket name')

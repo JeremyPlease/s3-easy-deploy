@@ -74,14 +74,42 @@ function getFiles() {
       if (err) {
         return reject(err);
       }
+      const addHeaders = Array.isArray(config.putObjectParams) && config.putObjectParams.length > 0;
+      const addMetadata = Array.isArray(config.metadata) && config.metadata.length > 0;
       files = files.filter(f => !Fs.lstatSync(Path.join(config.publicRoot, f)).isDirectory());
       resolve(files.map(f => {
+        const extraHeaders = {};
+        if (addHeaders) {
+          config.putObjectParams.forEach(h => {
+            try {
+              if (h.match.test(f)) {
+                Object.assign(extraHeaders, h.tags);
+              }
+            } catch (e) {
+              console.error('Error with additional putObject parameters', e);
+            }
+          });
+        }
+        const extraMetadata = {};
+        if (addMetadata) {
+          config.metadata.forEach(m => {
+            try {
+              if (m.match.test(f)) {
+                Object.assign(extraMetadata, m.tags);
+              }
+            } catch (e) {
+              console.error('Error with metadata', e);
+            }
+          });
+        }
         const body = Fs.readFileSync(Path.join(config.publicRoot, f));
         return  {
           body: body,
           type: Mime.getType(f),
           md5: Crypto.createHash('md5').update(body).digest('hex'),
-          path: Path.parse(f)
+          path: Path.parse(f),
+          extraHeaders,
+          extraMetadata
         };
       }));
     });
@@ -111,12 +139,14 @@ function uploadFile(file, callback) {
   const key = Path.join(file.path.dir, file.path.base).replace(/\\/g,'/');
 
   const params = {
+    ...file.extraHeaders,
     Bucket: config.bucket,
     Key: key,
     ACL: config.acl,
     Body: file.body,
     ContentType: file.type,
     Metadata: {
+      ...file.extraMetadata,
       'Content-MD5': file.md5
     }
   };
